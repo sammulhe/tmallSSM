@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import mapper.CategoryMapper;
 import mapper.PropertyMapper;
 import pojo.Property;
 
@@ -13,10 +14,14 @@ public class PropertyServiceImpl implements PropertyService{
 
 	@Autowired
 	PropertyMapper propertyMapper;
+	@Autowired
+	CategoryMapper categoryMapper;
 	
 	@Override
 	public List<Property> listProperty(Property property) {
-		return propertyMapper.list(property);				
+        List<Property> properties = propertyMapper.list(property);	
+        
+        return properties;
 	}
 
 	@Override
@@ -26,8 +31,9 @@ public class PropertyServiceImpl implements PropertyService{
 
 	@Override
 	public Property getProperty(Property property) {
-		// TODO Auto-generated method stub
-		return propertyMapper.getOne(property.getId());
+		property = propertyMapper.getOne(property.getId());
+		
+		return property;
 	}
 
 	@Override
