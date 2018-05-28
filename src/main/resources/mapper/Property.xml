@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+    
+	<mapper namespace="mapper.PropertyMapper">
+	
+	   <select id="list" resultType="Property" parameterType="Property">
+	      select * from property where cid = #{cid}
+	   </select>
+	   
+	   <insert id="add" useGeneratedKeys="true" keyProperty="id" keyColumn="id" parameterType="Property">
+	      insert into property (cid,name) values (#{cid},#{name});
+	   </insert>
+	   
+	   <select id="getOne" resultType="Property" parameterType="_int">
+	      select * from property where id = #{id}
+	   </select>
+	   
+	   <update id="update" parameterType="Property">
+	      update property set name = #{name} where id = #{id}
+	   </update>
+	   
+	   <delete id="delete" parameterType="_int">
+	      delete from property where id = #{id}
+	   </delete>
+	   
+	</mapper>
