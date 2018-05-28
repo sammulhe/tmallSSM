@@ -8,5 +8,11 @@ public interface CategoryMapper {
 
 	public List<Category> list();
 	
-	public int getTotal();
+	public void add(Category category);
+	
+	public Category getOne(int id);
+	
+	public void update(Category category);
+	
+	public void delete(int id);
 }

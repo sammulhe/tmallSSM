@@ -10,7 +10,19 @@
 	       select * from category
 	    </select>
 	    
-	    <select id="getTotal" resultType="_int">
-	       select count(*) from category
-	    </select> 	    
+	    <insert id="add" useGeneratedKeys="true" keyProperty="id" keyColumn="id" parameterType="Category">
+	       insert into category (name) values (#{name})
+	    </insert> 	
+	    
+	    <select id="getOne" parameterType="_int" resultType="Category">
+	       select * from category where id = #{id}
+	    </select>   
+	    
+	    <update id="update" parameterType="Category">
+	       update category set name=#{name} where id = #{id}
+	    </update> 
+	    
+	    <delete id="delete" parameterType="_int">
+	       delete from category where id = #{id}
+	    </delete>
 	</mapper>
