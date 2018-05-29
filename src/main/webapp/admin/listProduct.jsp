@@ -64,8 +64,8 @@
 						<td>${p.id}</td>
 						
 						<td>
-                          <c:if test="${!empty p.productSingleImages}">
-                            <img width="40px" src="img/productSingle/${p.firstProductImage.id}.jpg">
+                          <c:if test="${!empty p.productSingleImage}">
+                            <img width="40px" src="img/productSingle/${p.productSingleImage.id}.jpg">
                           </c:if>
                         </td>
 						<td>${p.name}</td>

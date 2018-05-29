@@ -9,9 +9,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import mapper.CategoryMapper;
+import mapper.ProductImageMapper;
 import mapper.ProductMapper;
 import pojo.Category;
 import pojo.Product;
+import pojo.ProductImage;
 import util.DateUtil;
 
 @Service
@@ -21,10 +23,18 @@ public class ProductServiceImpl implements ProductService{
 	ProductMapper productMapper;
 	@Autowired
 	CategoryMapper categoryMapper;
+	@Autowired
+	ProductImageMapper productImageMapper;
 	
 	@Override
 	public List<Product> listProduct(Product product) {
-		return productMapper.list(product);
+		List<Product> products = productMapper.list(product);
+		for(Product p : products){
+			ProductImage productImage = productImageMapper.getFirstSingleOne(p.getId());
+			p.setProductSingleImage(productImage);
+		}
+		
+		return products;
 	}
 
 	@Override

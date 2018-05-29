@@ -13,4 +13,6 @@ public interface ProductImageMapper {
 	public void delete(int id);
 	
 	public ProductImage getOne(int id);
+	
+	public ProductImage getFirstSingleOne(int pid);
 }

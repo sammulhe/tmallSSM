@@ -11,7 +11,7 @@ public class Product {
 	private int cid;
 	private String createDate;
 	private Category category;
-	private Product productSingleImages;
+	private ProductImage productSingleImage;
 	
 	
 	public int getId() {
@@ -76,11 +76,13 @@ public class Product {
 	public void setCreateDate(String createDate) {
 		this.createDate = createDate;
 	}
-	public Product getProductSingleImages() {
-		return productSingleImages;
+	
+	
+	public ProductImage getProductSingleImage() {
+		return productSingleImage;
 	}
-	public void setProductSingleImages(Product productSingleImages) {
-		this.productSingleImages = productSingleImages;
+	public void setProductSingleImage(ProductImage productSingleImage) {
+		this.productSingleImage = productSingleImage;
 	}
 	
 	

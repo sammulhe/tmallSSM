@@ -18,4 +18,8 @@
 	    <select id="getOne" parameterType="_int" resultType="ProductImage">
 	       select * from product_image where id = #{id}
 	    </select>
+	    
+	    <select id="getFirstSingleOne" parameterType="_int" resultType="ProductImage">
+	       select * from product_image where pid = #{pid} and type = "Single" limit 1
+	    </select>
 	</mapper>
