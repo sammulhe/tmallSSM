@@ -14,9 +14,14 @@
 	    </insert>
 	    
 	    <resultMap type="Product" id="productBean">
-            <id column="id" property="id" />
-            <result column="name" property="name" />
-            <result column="rice" property="price" />
+               <id column="id" property="id" />
+               <result column="name" property="name"/>
+               <result column="subTitle" property="subTitle"/>
+               <result column="originalPrice" property="originalPrice"/>
+               <result column="promotePrice" property="promotePrice"/>
+               <result column="stock" property="stock"/>
+               <result column="cid" property="cid"/>
+               <result column="createDate" property="createDate"/>
      
             <!-- 多对一的关系 -->
             <!-- property: 指的是属性名称, javaType：指的是属性的类型 -->

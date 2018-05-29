@@ -75,7 +75,7 @@ $(function(){
 										<tr>
 									
 											<td align="left">
-												<img width="40px" height="40px" src="img/productSingle/${oi.product.id}.jpg">
+												<img width="40px" height="40px" src="img/productSingle/${oi.product.productSingleImage.id}.jpg">
 											</td>	
 											
 											<td>

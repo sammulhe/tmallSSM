@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+    
+	<mapper namespace="mapper.OrderItemMapper">
+	
+	     <resultMap type="OrderItem" id="orderItemBean">
+            <id column="oiid" property="id" />
+            <result column="pid" property="pid" />
+            <result column="oid" property="oid" />
+            <result column="uid" property="uid" />
+            <result column="number" property="number" />
+  
+            <!-- 多对一的关系,必须放在collection前面 -->
+            <!-- property: 指的是属性名称, javaType：指的是属性的类型 -->
+            <association property="product" javaType="Product">
+               <id column="id" property="id" />
+               <result column="name" property="name"/>
+               <result column="subTitle" property="subTitle"/>
+               <result column="originalPrice" property="originalPrice"/>
+               <result column="promotePrice" property="promotePrice"/>
+               <result column="stock" property="stock"/>
+               <result column="cid" property="cid"/>
+               <result column="createDate" property="createDate"/>
+            </association>
+   
+        </resultMap>
+	    <select id="getOne" resultMap="orderItemBean" parameterType="OrderItem">
+	       select p.*, oi.id 'oiid', oi.pid, oi.oid, oi.uid, oi.number from orderItem oi
+	       left join product p on oi.pid = p.id
+	       where oi.id = #{id}
+	    </select>
+	   
+	</mapper>
