@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+    <mapper namespace="mapper.ProductImageMapper">
+	    <select id="list" parameterType="_int" resultType="ProductImage">
+	       select * from product_image where pid = #{pid}
+	    </select>
+	    
+	    <insert id="add" useGeneratedKeys="true" keyProperty="id" keyColumn="id" parameterType="ProductImage">
+	       insert into product_image (pid,type) values (#{pid},#{type})
+	    </insert>	   
+	    
+	    <delete id="delete" parameterType="_int">
+	       delete from product_image where id = #{id}
+	    </delete>
+	    
+	    <select id="getOne" parameterType="_int" resultType="ProductImage">
+	       select * from product_image where id = #{id}
+	    </select>
+	</mapper>

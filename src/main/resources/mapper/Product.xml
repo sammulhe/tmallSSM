@@ -13,8 +13,22 @@
 	                           (#{name},#{subTitle},#{originalPrice},#{promotePrice},#{stock},#{cid},#{createDate})                              
 	    </insert>
 	    
-	    <select id="getOne" parameterType="_int" resultType="Product">
-	       select * from product where id = #{id}
+	    <resultMap type="Product" id="productBean">
+            <id column="id" property="id" />
+            <result column="name" property="name" />
+            <result column="rice" property="price" />
+     
+            <!-- 多对一的关系 -->
+            <!-- property: 指的是属性名称, javaType：指的是属性的类型 -->
+            <association property="category" javaType="Category">
+                <id column="cid" property="id"/>
+                <result column="cname" property="name"/>
+            </association>
+        </resultMap>      
+	    <select id="getOne" parameterType="_int" resultMap="productBean">
+	       select p.*,c.name 'cname'
+	       from product p left join category c on p.cid = c.id
+	       where p.id = #{id}
 	    </select>
 	    
 	    <update id="update" parameterType="Product">
