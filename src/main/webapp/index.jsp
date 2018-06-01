@@ -3,5 +3,5 @@
 
 
 <%  
-response.sendRedirect("/tmallSSM/admin_category_list");        
+response.sendRedirect("/tmallSSM/forehome");        
 %> 
