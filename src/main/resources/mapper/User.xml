@@ -8,5 +8,20 @@
 	    <select id="list" resultType="User">
 	       select * from user
 	    </select>
-
+	    
+	    <select id="getOne" resultType="User" parameterType="_int">
+	       select * from user where id = #{id}
+	    </select>
+	    
+	    <select id="login" resultType="User" parameterType="User">
+	       select * from user where username = #{username} and password = #{password}
+	    </select>
+	    
+	    <insert id="register"  useGeneratedKeys="true" keyProperty="id" keyColumn="id" parameterType="User">
+	       insert into user (username, password) values (#{username},#{password})
+	    </insert>
+	    
+	    <select id="checkUsername" resultType="User" parameterType="string">
+	       select * from user where username = #{0}
+	    </select>
 	</mapper>

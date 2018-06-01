@@ -15,4 +15,6 @@ public interface ProductImageMapper {
 	public ProductImage getOne(int id);
 	
 	public ProductImage getFirstSingleOne(int pid);
+	
+	public List<ProductImage> listByType(ProductImage productImage);
 }

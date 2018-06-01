@@ -52,4 +52,9 @@ public class ProductImageServiceImpl implements ProductImageService{
 		return productImageMapper.getOne(id);
 	}
 
+	@Override
+	public List<ProductImage> listByType(ProductImage productImage) {
+		return productImageMapper.listByType(productImage);
+	}
+
 }

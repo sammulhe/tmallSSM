@@ -19,5 +19,25 @@ public class UserServiceImpl implements UserService{
 		return userMapper.list();
 	}
 
+	@Override
+	public User loginUser(User user) {
+		return userMapper.login(user);
+	}
+
+	@Override
+	public void registerUser(User user) {
+		userMapper.register(user);
+	}
+
+	@Override
+	public boolean checkUsername(String username) {
+		User user = userMapper.checkUsername(username);
+		System.out.println(user);
+		if(user == null){
+			return true;
+		}
+		return false;
+	}
+
 	
 }

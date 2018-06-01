@@ -15,4 +15,6 @@ public interface ProductImageService {
 	public void deleteProductImage(int id);
 	
 	public ProductImage getProductImage(int id);
+	
+	public List<ProductImage> listByType(ProductImage productImage);
 }

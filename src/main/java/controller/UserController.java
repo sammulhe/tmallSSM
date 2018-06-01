@@ -35,4 +35,6 @@ public class UserController {
 		
 		return "admin/listUser.jsp";
 	}
+	
+	
 }

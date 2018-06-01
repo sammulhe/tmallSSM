@@ -141,7 +141,7 @@ $(function(){
 <div class="imgAndInfo">
  
     <div class="imgInimgAndInfo">
-        <img src="img/productSingle/${product.firstProductImage.id}.jpg" class="bigImg">
+        <img src="img/productSingle/${product.productFirstImage.id}.jpg" class="bigImg">
         <div class="smallImageDiv">
             <c:forEach items="${product.productSingleImages}" var="pi">
                 <img src="img/productSingle_small/${pi.id}.jpg" bigImageURL="img/productSingle/${pi.id}.jpg" class="smallImage">

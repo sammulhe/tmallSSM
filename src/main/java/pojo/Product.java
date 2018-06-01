@@ -1,5 +1,6 @@
 package pojo;
 
+import java.util.List;
 
 public class Product {
 	private int id;
@@ -11,7 +12,12 @@ public class Product {
 	private int cid;
 	private String createDate;
 	private Category category;
-	private ProductImage productSingleImage;
+	private ProductImage productFirstImage;
+	private List<ProductImage> productSingleImages;
+	private List<ProductImage> productDetailImages;
+	
+	private int saleCount;
+	private int reviewCount;
 	
 	
 	public int getId() {
@@ -78,11 +84,11 @@ public class Product {
 	}
 	
 	
-	public ProductImage getProductSingleImage() {
-		return productSingleImage;
+	public ProductImage getProductFirstImage() {
+		return productFirstImage;
 	}
-	public void setProductSingleImage(ProductImage productSingleImage) {
-		this.productSingleImage = productSingleImage;
+	public void setProductFirstImage(ProductImage productFirstImage) {
+		this.productFirstImage = productFirstImage;
 	}
 	
 	
@@ -91,6 +97,38 @@ public class Product {
 	}
 	public void setCategory(Category category) {
 		this.category = category;
+	}
+	
+	
+	public List<ProductImage> getProductSingleImages() {
+		return productSingleImages;
+	}
+	public void setProductSingleImages(List<ProductImage> productSingleImages) {
+		this.productSingleImages = productSingleImages;
+	}
+	
+	
+	public int getSaleCount() {
+		return saleCount;
+	}
+	public void setSaleCount(int saleCount) {
+		this.saleCount = saleCount;
+	}
+	
+	
+	public int getReviewCount() {
+		return reviewCount;
+	}
+	public void setReviewCount(int reviewCount) {
+		this.reviewCount = reviewCount;
+	}
+	
+	
+	public List<ProductImage> getProductDetailImages() {
+		return productDetailImages;
+	}
+	public void setProductDetailImages(List<ProductImage> productDetailImages) {
+		this.productDetailImages = productDetailImages;
 	}
 	
 

@@ -35,7 +35,7 @@ public class OrderServiceImpl implements OrderService{
 			for(OrderItem oi : o.getOrderItems()){
 				//oi = orderItemMapper.getOne(oi);
 				Product product = productMapper.getOne(oi.getPid());
-				product.setProductSingleImage(productImageMapper.getFirstSingleOne(product.getId()));
+				product.setProductFirstImage(productImageMapper.getFirstSingleOne(product.getId()));
 				oi.setProduct(product);
 				totalNumber = totalNumber + oi.getNumber();
 				total = total + totalNumber * oi.getProduct().getPromotePrice();

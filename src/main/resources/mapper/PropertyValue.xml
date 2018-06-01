@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+    
+	<mapper namespace="mapper.PropertyValueMapper">
+	  
+	   <resultMap type="PropertyValue" id="propertyValueBean">
+               <id column="id" property="id" />
+               <result column="pid" property="pid"/>
+               <result column="ptid" property="ptid"/>
+               <result column="value" property="value"/>
+     
+            <!-- 多对一的关系 -->
+            <!-- property: 指的是属性名称, javaType：指的是属性的类型 -->
+            <association property="property" javaType="Property">
+                <id column="ptid" property="id"/>
+                <result column="cid" property="cid"/>
+                <result column="name" property="name"/>             
+            </association>
+        </resultMap>      
+	  <select id="listByPid" resultMap="propertyValueBean" parameterType="_int">
+	      select pv.*,p.cid,p.name from property_value pv
+	      left join property p 
+	      on pv.ptid = p.id
+	      where pv.pid = #{pid}      
+	  </select>
+	   
+	</mapper>
