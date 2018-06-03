@@ -45,5 +45,9 @@
 	    <delete id="delete" parameterType="_int">
 	       delete from product where id = #{id}
 	    </delete>
+	    
+	    <select id="search" resultType="Product" parameterType="string">
+	       select * from product where name like '%'||#{0}||'%'
+	    </select>
 	   
 	</mapper>

@@ -12,6 +12,7 @@ import mapper.CategoryMapper;
 import mapper.OrderItemMapper;
 import mapper.ProductImageMapper;
 import mapper.ProductMapper;
+import mapper.ReviewMapper;
 import pojo.Category;
 import pojo.Product;
 import pojo.ProductImage;
@@ -28,6 +29,8 @@ public class ProductServiceImpl implements ProductService{
 	ProductImageMapper productImageMapper;
 	@Autowired
 	OrderItemMapper orderItemMapper;
+	@Autowired
+	ReviewMapper reviewMapper;
 	
 	@Override
 	public List<Product> listProduct(Product product) {
@@ -59,10 +62,7 @@ public class ProductServiceImpl implements ProductService{
 	    }else{
 	    	product.setSaleCount(orderItemMapper.getSaleCount(id));
 	    }
-	    
-		
-		
-		
+	   
 		return product;
 	}
 
@@ -74,6 +74,22 @@ public class ProductServiceImpl implements ProductService{
 	@Override
 	public void deleteProduct(Product product) {
 		productMapper.delete(product.getId());
+	}
+
+	@Override
+	public List<Product> search(String keyword) {
+		List<Product> products = productMapper.search(keyword);
+		for(Product product : products){
+			product.setProductFirstImage(productImageMapper.getFirstSingleOne(product.getId()));
+			if(null == orderItemMapper.getSaleCount(product.getId())){
+		    	product.setSaleCount(0);
+		    }else{
+		    	product.setSaleCount(orderItemMapper.getSaleCount(product.getId()));
+		    }
+			product.setReviewCount(reviewMapper.total(product.getId()));
+		}
+		
+		return products;
 	}
 	
 

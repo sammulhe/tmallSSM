@@ -15,4 +15,6 @@ public interface ProductMapper {
 	public void update(Product product);
 	
 	public void delete(int id);
+	
+	public List<Product> search(String keyword);
 }

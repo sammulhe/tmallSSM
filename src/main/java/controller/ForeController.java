@@ -1,6 +1,7 @@
 package controller;
 
 import java.io.IOException;
+import java.util.Collections;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -12,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
 import pojo.Category;
@@ -126,5 +128,76 @@ public class ForeController {
 		request.setAttribute("reviews", reviews);
 		
 		return "product.jsp";
+	}
+	
+	@RequestMapping("forecheckLogin")
+	public void checkLogin(HttpSession session, HttpServletResponse response) throws IOException{
+	
+		if(session.getAttribute("user") != null){
+			response.getWriter().print("success");
+			return;
+		}
+		response.getWriter().print("fail");
+		return;
+	}
+	
+	@RequestMapping("foreloginAjax")
+	public void loginAjax(HttpServletResponse response, User u) throws IOException{
+		User user = userService.loginUser(u);
+		if(null != user){
+			response.getWriter().print("success");
+			return;
+		}
+		response.getWriter().print("fail");
+		return;
+	}
+	
+	@RequestMapping("forecategory")                                   //获取cid
+	public String category(Model model,Product product, HttpServletRequest request){
+		Category category = new Category();
+		category.setId(product.getCid());
+		category = categoryService.getOne(category);
+		
+		//获取products
+		List<Product> products = productService.listProduct(product);
+		category.setProducts(products);	
+		String sort = request.getParameter("sort");
+		if(sort != null){
+			switch (sort) {
+            case "review":
+                Collections.sort(category.getProducts(), (p1, p2) -> p2.getReviewCount() - p1.getReviewCount());
+                break;
+            case "date":
+                Collections.sort(category.getProducts(), (p1, p2) -> p1.getCreateDate().compareTo(p2.getCreateDate()));
+                break;
+            case "saleCount":
+                Collections.sort(category.getProducts(), (p1, p2) -> p2.getSaleCount() - p1.getSaleCount());
+                break;
+            case "price":
+                Collections.sort(category.getProducts(), (p1, p2) -> (int) (p1.getPromotePrice() - p2.getPromotePrice()));
+                break;
+            case "all":
+                Collections.sort(category.getProducts(), (p1, p2) -> p2.getReviewCount() * p2.getSaleCount() - p1.getReviewCount() * p1.getSaleCount());
+                break;
+            default:
+                break;	
+		}
+		}
+		
+		model.addAttribute("category",category);
+		
+		return "category.jsp";		
+	}
+	
+	
+	@RequestMapping("foresearch")
+	public String search(HttpServletRequest request){
+		String keyword = request.getParameter("keyword");
+		
+		List<Product> products = productService.search(keyword);
+		
+		request.setAttribute("products", products);
+		
+		return "searchResult.jsp";
 	}
 }

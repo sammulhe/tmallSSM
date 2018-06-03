@@ -50,6 +50,7 @@ $(function(){
                                 addCartpage,
                                 {"pid":pid,"num":num},
                                 function(result){
+                                	alert(result);
                                     if("success"==result){
                                         $(".addCartButton").html("已加入购物车");
                                         $(".addCartButton").attr("disabled","disabled");
