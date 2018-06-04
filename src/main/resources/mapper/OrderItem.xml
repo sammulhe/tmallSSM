@@ -5,6 +5,10 @@
     
 	<mapper namespace="mapper.OrderItemMapper">
 	
+	     <select id="listByUid" parameterType="_int" resultType="OrderItem">
+             select * from orderItem where uid = #{uid} and (oid is null or oid = 0)
+	     </select>
+	
 	     <resultMap type="OrderItem" id="orderItemBean">
             <id column="oiid" property="id" />
             <result column="pid" property="pid" />
@@ -26,7 +30,7 @@
             </association>
    
         </resultMap>
-	    <select id="getOne" resultMap="orderItemBean" parameterType="OrderItem">
+	    <select id="getOne" resultMap="orderItemBean" parameterType="_int">
 	       select p.*, oi.id 'oiid', oi.pid, oi.oid, oi.uid, oi.number from orderItem oi
 	       left join product p on oi.pid = p.id
 	       where oi.id = #{id}
@@ -41,4 +45,24 @@
 	   <insert id="add" useGeneratedKeys="true" keyProperty="id" keyColumn="id" parameterType="OrderItem">
 	      insert into orderItem (pid,uid,number) values (#{pid},#{uid},#{number})
 	   </insert>
+	   
+	   <select id="exist" resultType="OrderItem" parameterType="OrderItem">
+	      select * from orderItem where pid = #{pid} and uid = #{uid} and (oid is null or oid = 0)
+	   </select>
+	   
+	   <update id="update" parameterType="OrderItem">
+	      update orderItem 
+	      set pid=#{pid},uid=#{uid},number=#{number},oid=#{oid}
+	      where id = #{id}
+	   </update>
+	   
+	   <select id="getCartNum" resultType="Integer" parameterType="_int">
+	       select sum(number) from orderItem where uid = #{uid} and (oid is null or oid = 0)
+	   </select>
+	   
+	   
+	   <delete id="delete" parameterType="_int">
+	       delete from orderItem where id = #{id}
+	   </delete>
+	   
 	</mapper>

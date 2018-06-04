@@ -29,6 +29,12 @@
     
     <mvc:default-servlet-handler /><!--使用默认的Servlet来响应静态文件-->
 
-
+     <!-- 拦截器 -->
+    <mvc:interceptors>
+        <mvc:interceptor>
+            <mvc:mapping path="/*"/>
+            <bean class="Interceptor.LoginInterceptor"/>
+        </mvc:interceptor>
+    </mvc:interceptors>
 
 </beans>

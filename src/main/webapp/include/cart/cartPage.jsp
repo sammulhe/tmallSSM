@@ -240,12 +240,12 @@ function syncPrice(pid,num,price){
 				</tr>
 			</thead>
 			<tbody>
-				<c:forEach items="${cartOrderItems }" var="oi">
+				<c:forEach items="${orderItems }" var="oi">
 					<tr oiid="${oi.id}" class="cartProductItemTR">
 						<td>
 							<img selectit="false" oiid="${oi.id}" class="cartProductItemIfSelected" src="img/site/cartNotSelected.png">
 							<a style="display:none" href="#nowhere"><img src="img/site/cartSelected.png"></a>
-							<img class="cartProductImg"  src="img/productSingle_middle/${oi.product.firstProductImage.id}.jpg">
+							<img class="cartProductImg"  src="img/productSingle_middle/${oi.product.productFirstImage.id}.jpg">
 						</td>
 						<td>
 							<div class="cartProductLinkOutDiv">

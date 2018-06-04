@@ -77,6 +77,7 @@ public class ForeController {
 			return "login.jsp";
 		}
 		session.setAttribute("user", user);
+		session.setAttribute("cartTotalItemNumber", orderItemService.getCartNum(user.getId()));
 		return "redirect:/forehome";
 	}
 	
@@ -151,6 +152,7 @@ public class ForeController {
 		User user = userService.loginUser(u);
 		if(null != user){
 			session.setAttribute("user", user);
+			session.setAttribute("cartTotalItemNumber", orderItemService.getCartNum(user.getId()));
 			response.getWriter().print("success");
 			return;
 		}
@@ -212,21 +214,118 @@ public class ForeController {
 	public String buyone(HttpSession session, Model model, @RequestParam("pid") int pid, @RequestParam("num") int num){
 		Product product = productService.getProduct(pid);
 		User user = (User) session.getAttribute("user");
-		
+		Integer cartTotalItemNumber = (Integer) session.getAttribute("cartTotalItemNumber");
 		
 		OrderItem orderItem = new OrderItem();
 		orderItem.setPid(product.getId());
 		orderItem.setUid(user.getId());
 		orderItem.setNumber(num);
 		orderItem.setProduct(product);
-		orderItemService.addOrderItem(orderItem);
+		orderItemService.updateOrderItem(orderItem);
 		
 		List<OrderItem> orderItems = new ArrayList<>();
 		orderItems.add(orderItem);
 		
+		float total = num * product.getPromotePrice();
+		
 		model.addAttribute("orderItems",orderItems);
+		model.addAttribute("total",total);		
+		if(null == cartTotalItemNumber){
+			session.setAttribute("cartTotalItemNumber", num);
+		}else{
+			session.setAttribute("cartTotalItemNumber", cartTotalItemNumber + num);
+		}
 		
 		return "buy.jsp";
 	}
 	
+	@RequestMapping("forebuy")
+	public String buy(HttpServletRequest request){
+		String[] oiids = request.getParameterValues("oiid");
+		
+		List<OrderItem> orderItems = new ArrayList<>();
+		float total = 0;
+		for(String oi : oiids){
+			int oiid = Integer.parseInt(oi);
+			OrderItem orderItem = orderItemService.getOrderItem(oiid);
+			Product product = productService.getProduct(orderItem.getPid());
+			orderItem.setProduct(product);
+			
+			total = total + orderItem.getNumber() * product.getPromotePrice();			
+			orderItems.add(orderItem);
+		}
+		
+		request.setAttribute("total", total);
+		request.setAttribute("orderItems", orderItems);
+		
+		return "buy.jsp";
+	}
+	
+	
+	@RequestMapping("foreaddCart")
+	public void addCart(HttpServletRequest request,HttpServletResponse response, @RequestParam("pid") int pid, @RequestParam("num") int num) throws IOException{
+		User user = (User) request.getSession().getAttribute("user");
+		int uid = user.getId();
+		Integer cartTotalItemNumber = (Integer) request.getSession().getAttribute("cartTotalItemNumber");
+		
+		OrderItem orderItem = new OrderItem();
+		orderItem.setPid(pid);
+		orderItem.setUid(uid);
+		orderItem.setNumber(num);
+		orderItemService.updateOrderItem(orderItem); //在update中调用了exist判断是否有能合并的订单项存在，存在就合并，否则插入
+		
+		if(null == cartTotalItemNumber){
+			request.getSession().setAttribute("cartTotalItemNumber", num);
+		}else{
+			request.getSession().setAttribute("cartTotalItemNumber", cartTotalItemNumber + num);
+		}
+		
+		response.getWriter().print("success");
+		return;
+	}
+	
+	
+	@RequestMapping("forecart")
+	public String cart(HttpSession session,Model model){
+		User user = (User) session.getAttribute("user");
+		if(null == user){
+			return "login.jsp";
+		}
+		int uid = user.getId();
+		
+		List<OrderItem> orderItems = orderItemService.listByUid(uid);
+		for(OrderItem orderItem : orderItems){
+			Product product = productService.getProduct(orderItem.getPid());
+			orderItem.setProduct(product);
+		}
+		
+		model.addAttribute("orderItems",orderItems);
+		
+		return "cart.jsp";
+	}
+	
+	
+	@RequestMapping("forechangeOrderItem")
+	public void changeOrderItem(HttpServletResponse response, HttpSession session,
+			@RequestParam("pid") int pid, @RequestParam("oiid") int oiid, @RequestParam("number") int number) throws IOException{
+		OrderItem orderItem = orderItemService.getOrderItem(oiid);
+		int add = number - orderItem.getNumber();
+		orderItem.setNumber(number);
+		
+		orderItemService.update(orderItem);
+	    session.setAttribute("cartTotalItemNumber", add);
+		
+		response.getWriter().print("success");		
+	}
+	
+	@RequestMapping("foredeleteOrderItem")
+	public void deleteOrderItem(HttpServletResponse response, HttpSession session,@RequestParam("oiid") int oiid) throws IOException{
+		OrderItem orderItem = orderItemService.getOrderItem(oiid);
+		orderItemService.delete(oiid);
+		
+		Integer cartTotalItemNumber = (Integer) session.getAttribute("cartTotalItemNumber");
+		session.setAttribute("cartTotalItemNumber", cartTotalItemNumber - orderItem.getNumber());
+		
+		response.getWriter().print("success");
+	}
 }
