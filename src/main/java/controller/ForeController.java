@@ -1,6 +1,7 @@
 package controller;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -17,12 +18,14 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
 import pojo.Category;
+import pojo.OrderItem;
 import pojo.Product;
 import pojo.ProductImage;
 import pojo.PropertyValue;
 import pojo.Review;
 import pojo.User;
 import service.CategoryService;
+import service.OrderItemService;
 import service.ProductImageService;
 import service.ProductService;
 import service.PropertyService;
@@ -48,6 +51,8 @@ public class ForeController {
 	PropertyValueService propertyValueService;
 	@Autowired
 	ReviewService reviewService;
+	@Autowired
+	OrderItemService orderItemService;
 	
 	@RequestMapping("forehome")
 	public String home(Model model){
@@ -142,9 +147,10 @@ public class ForeController {
 	}
 	
 	@RequestMapping("foreloginAjax")
-	public void loginAjax(HttpServletResponse response, User u) throws IOException{
+	public void loginAjax(HttpSession session, HttpServletResponse response, User u) throws IOException{
 		User user = userService.loginUser(u);
 		if(null != user){
+			session.setAttribute("user", user);
 			response.getWriter().print("success");
 			return;
 		}
@@ -200,4 +206,27 @@ public class ForeController {
 		
 		return "searchResult.jsp";
 	}
+	
+	
+	@RequestMapping("forebuyone")
+	public String buyone(HttpSession session, Model model, @RequestParam("pid") int pid, @RequestParam("num") int num){
+		Product product = productService.getProduct(pid);
+		User user = (User) session.getAttribute("user");
+		
+		
+		OrderItem orderItem = new OrderItem();
+		orderItem.setPid(product.getId());
+		orderItem.setUid(user.getId());
+		orderItem.setNumber(num);
+		orderItem.setProduct(product);
+		orderItemService.addOrderItem(orderItem);
+		
+		List<OrderItem> orderItems = new ArrayList<>();
+		orderItems.add(orderItem);
+		
+		model.addAttribute("orderItems",orderItems);
+		
+		return "buy.jsp";
+	}
+	
 }

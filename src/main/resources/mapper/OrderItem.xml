@@ -36,4 +36,9 @@
 	   <select id="getSaleCount" resultType="Integer" parameterType = "_int">
 	      select sum(number) from orderItem where pid = #{id}
 	   </select>
+	   
+	   
+	   <insert id="add" useGeneratedKeys="true" keyProperty="id" keyColumn="id" parameterType="OrderItem">
+	      insert into orderItem (pid,uid,number) values (#{pid},#{uid},#{number})
+	   </insert>
 	</mapper>
