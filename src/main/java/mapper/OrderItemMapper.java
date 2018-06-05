@@ -22,4 +22,6 @@ public interface OrderItemMapper {
 	public Integer getCartNum(int uid);
 	
 	public void delete(int id);
+	
+	public List<OrderItem> listByOid(int oid);
 	}

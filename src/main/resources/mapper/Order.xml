@@ -42,5 +42,30 @@
 	       left join orderItem oi on o.id = oi.oid
 	       left join user u on o.uid = u.id
 	    </select>
-	   
+	    
+	    
+	    <insert id="add" useGeneratedKeys="true" keyProperty="id" keyColumn="id" parameterType="Order">
+	       insert into 'order' (orderCode,address,post,receiver,mobile,userMessage,createDate,payDate,deliveryDate,
+	                            confirmDate,uid,status)
+	              values (#{orderCode},#{address},#{post},#{receiver},#{mobile},#{userMessage},#{createDate},#{payDate},
+	                      #{deliveryDate},#{confirmDate},#{uid},#{status})
+	    </insert>
+	    
+	    <select id="getOne" parameterType="Order" resultType="Order">
+	       select * from 'order' where id = #{id}
+	    </select>
+	    
+	    <update id="update" parameterType="Order">
+	       update 'order' set payDate=#{payDate},deliveryDate=#{deliveryDate},confirmDate=#{confirmDate},status=#{status}
+	       where id=#{id}
+	    </update>
+	    
+	    
+	    <select id="listByUid" resultType="Order" parameterType="_int">
+	        select * from 'order' where uid = #{uid}
+	    </select>
+	    
+	    <delete id="delete" parameterType="_int">
+	        delete from 'order' where id = #{id}
+	    </delete>
 	</mapper>

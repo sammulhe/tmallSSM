@@ -6,13 +6,17 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import mapper.OrderItemMapper;
+import mapper.ProductImageMapper;
 import pojo.OrderItem;
+import pojo.ProductImage;
 
 @Service
 public class OrderItemServiceImpl implements OrderItemService{
 
 	@Autowired
 	OrderItemMapper orderItemMapper;
+	@Autowired
+	ProductImageMapper productImageMapper;
 
 	@Override
 	public void addOrderItem(OrderItem orderItem) {
@@ -61,6 +65,22 @@ public class OrderItemServiceImpl implements OrderItemService{
 	public void delete(int id) {
 		orderItemMapper.delete(id);
 	}
+
+	@Override
+	public List<OrderItem> listByOid(int oid) {
+		List<OrderItem> orderItems = orderItemMapper.listByOid(oid);
+		
+		if(!orderItems.isEmpty()){
+		for(OrderItem orderItem : orderItems){
+			ProductImage productImage = productImageMapper.getFirstSingleOne(orderItem.getPid());
+			orderItem.getProduct().setProductFirstImage(productImage);
+		}
+		}
+		
+		return orderItems;
+	}
+
+
 	
 	
 }

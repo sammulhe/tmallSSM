@@ -3,7 +3,9 @@ package controller;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Date;
 import java.util.List;
+import java.util.Random;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -18,6 +20,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
 import pojo.Category;
+import pojo.Order;
 import pojo.OrderItem;
 import pojo.Product;
 import pojo.ProductImage;
@@ -26,12 +29,14 @@ import pojo.Review;
 import pojo.User;
 import service.CategoryService;
 import service.OrderItemService;
+import service.OrderService;
 import service.ProductImageService;
 import service.ProductService;
 import service.PropertyService;
 import service.PropertyValueService;
 import service.ReviewService;
 import service.UserService;
+import util.DateUtil;
 
 @Controller
 @RequestMapping("")
@@ -53,6 +58,8 @@ public class ForeController {
 	ReviewService reviewService;
 	@Autowired
 	OrderItemService orderItemService;
+	@Autowired
+	OrderService orderService;
 	
 	@RequestMapping("forehome")
 	public String home(Model model){
@@ -228,8 +235,8 @@ public class ForeController {
 		
 		float total = num * product.getPromotePrice();
 		
-		model.addAttribute("orderItems",orderItems);
-		model.addAttribute("total",total);		
+		session.setAttribute("orderItems", orderItems);
+		session.setAttribute("total",total);		
 		if(null == cartTotalItemNumber){
 			session.setAttribute("cartTotalItemNumber", num);
 		}else{
@@ -255,8 +262,8 @@ public class ForeController {
 			orderItems.add(orderItem);
 		}
 		
-		request.setAttribute("total", total);
-		request.setAttribute("orderItems", orderItems);
+		request.getSession().setAttribute("total", total);
+		request.getSession().setAttribute("orderItems", orderItems);
 		
 		return "buy.jsp";
 	}
@@ -327,5 +334,165 @@ public class ForeController {
 		session.setAttribute("cartTotalItemNumber", cartTotalItemNumber - orderItem.getNumber());
 		
 		response.getWriter().print("success");
+	}
+	
+	
+	@RequestMapping("forecreateOrder")
+	public String createOrder(HttpServletRequest request, HttpSession session, Order order){
+		User user = (User) session.getAttribute("user");
+		@SuppressWarnings("unchecked")
+		List<OrderItem> orderItems = (List<OrderItem>) session.getAttribute("orderItems");
+		Integer cartTotalItemNumber = (Integer) session.getAttribute("cartTotalItemNumber");
+		
+		Date date = new Date();
+		order.setOrderCode(DateUtil.DateToString(date) + "ttttt");
+		order.setCreateDate(DateUtil.DateToString(date));
+		order.setStatus("waitPay");
+		order.setUid(user.getId());
+		orderService.addOrder(order);
+		
+		for(OrderItem orderItem : orderItems){
+			orderItem.setOid(order.getId());
+			orderItemService.update(orderItem);
+			cartTotalItemNumber = cartTotalItemNumber - orderItem.getNumber();
+		}
+		
+		request.setAttribute("oid", order.getId());
+		session.setAttribute("cartTotalItemNumber", cartTotalItemNumber);
+		return "alipay.jsp";
+	}
+	
+	
+	@RequestMapping("forepayed")
+	public String payed(Model model,@RequestParam("oid") int oid, @RequestParam("total") float total){
+		Date date = new Date();
+		Order order = orderService.getOrder(oid);
+		
+		order.setPayDate(DateUtil.DateToString(date));
+		order.setStatus("waitDelivery");
+		orderService.updateOrder(order);
+		
+		model.addAttribute("order",order);
+		
+		return "payed.jsp";		
+	}
+	
+	
+	@RequestMapping("forebought")
+	public String bought(Model model, HttpSession session){
+		User user = (User) session.getAttribute("user");
+		
+		List<Order> orders = orderService.listByUid(user.getId());
+		for(Order order : orders){
+			List<OrderItem> orderItems = orderItemService.listByOid(order.getId());
+			int totalNumber = 0;
+			float total = 0;
+			for(OrderItem orderItem : orderItems){
+				totalNumber = totalNumber + orderItem.getNumber();
+				total = total + orderItem.getNumber() * orderItem.getProduct().getPromotePrice();
+			}
+			order.setOrderItems(orderItems);
+			order.setTotalNumber(totalNumber);
+			order.setTotal(total);
+		}
+		
+		model.addAttribute("orders",orders);
+		
+		return "bought.jsp";
+	}
+	
+	//订单页付款
+	@RequestMapping("forealipay")
+	public String alipay(Model model,@RequestParam("oid") int oid, @RequestParam("total") float total){
+		
+		model.addAttribute("oid",oid);
+		model.addAttribute("total",total);
+		
+		return "alipay.jsp";	
+	}
+	
+	
+	@RequestMapping("foreconfirmPay")
+	public String confirmPay(Model model,@RequestParam("oid") int oid){
+		Order order = orderService.getOrder(oid);
+		float total = 0;
+		
+		List<OrderItem> orderItems = orderItemService.listByOid(oid);
+		for(OrderItem orderItem : orderItems){
+			total = total + orderItem.getNumber() * orderItem.getProduct().getPromotePrice();
+		}
+		order.setTotal(total);
+		order.setOrderItems(orderItems);
+		
+		model.addAttribute("order",order);
+		
+		return "confirmPay.jsp";
+	}
+	
+	@RequestMapping("foreorderConfirmed")
+	public String orderConfirmed(@RequestParam("oid") int oid){
+		Date date = new Date();
+		Order order = orderService.getOrder(oid);
+		
+		order.setConfirmDate(DateUtil.DateToString(date));
+		order.setStatus("waitReview");
+		orderService.updateOrder(order);
+		
+		return "orderConfirmed.jsp";
+		
+	}
+	
+	
+	@RequestMapping("foredeleteOrder")
+	public void deleteOrder(HttpServletResponse response, @RequestParam("oid") int oid) throws IOException{
+		orderService.deleteOrder(oid);
+		
+		response.getWriter().print("success");
+	}
+	
+	
+	@RequestMapping("forereview")
+	public String review(Model model,@RequestParam("oid") int oid){
+		Order order = new Order();
+		List<OrderItem> orderItems = orderItemService.listByOid(oid);
+		OrderItem orderItem = new OrderItem();
+		if(!orderItems.isEmpty()){
+			orderItem = orderItems.get(0);
+		}
+		
+		Product product = productService.getProduct(orderItem.getPid());
+		List<Review> reviews = reviewService.listByPid(product.getId());
+		product.setReviewCount(reviews.size());
+		
+		model.addAttribute("product",product);
+		order.setId(oid);
+		model.addAttribute("order",order);
+		
+		return "review.jsp";
+	}
+	
+	
+	@RequestMapping("foredoreview")
+	public String doreview(Model model,HttpSession session,Review review,@RequestParam("oid") int oid){
+		Date date = new Date();
+		User user = (User) session.getAttribute("user");
+		
+		review.setUid(user.getId());
+		review.setCreateDate(DateUtil.DateToString(date));
+		reviewService.addReview(review);
+		
+		Product product = productService.getProduct(review.getPid());
+		List<Review> reviews = reviewService.listByPid(product.getId());
+		product.setReviewCount(reviews.size());
+		
+		Order order = orderService.getOrder(oid);
+		order.setStatus("finish");
+		orderService.updateOrder(order);
+		
+		model.addAttribute("product",product);
+		model.addAttribute("order",order);
+		model.addAttribute("reviews", reviews);
+		
+		return "review.jsp";
 	}
 }

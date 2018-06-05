@@ -47,4 +47,29 @@ public class OrderServiceImpl implements OrderService{
 		return orders;
 	}
 
+	@Override
+	public void addOrder(Order order) {
+		orderMapper.add(order);
+	}
+
+	@Override
+	public Order getOrder(int id) {
+		return orderMapper.getOne(id);
+	}
+
+	@Override
+	public void updateOrder(Order order) {
+		orderMapper.update(order);
+	}
+
+	@Override
+	public List<Order> listByUid(int uid) {
+		return orderMapper.listByUid(uid);
+	}
+
+	@Override
+	public void deleteOrder(int id) {
+		orderMapper.delete(id);
+	}
+
 }

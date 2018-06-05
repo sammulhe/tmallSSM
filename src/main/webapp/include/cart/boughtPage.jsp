@@ -129,7 +129,7 @@ $(function(){
 				</tr>
 				<c:forEach items="${o.orderItems}" var="oi" varStatus="st">
 					<tr class="orderItemProductInfoPartTR" >
-						<td class="orderItemProductInfoPartTD"><img width="80" height="80" src="img/productSingle_middle/${oi.product.firstProductImage.id}.jpg"></td>
+						<td class="orderItemProductInfoPartTD"><img width="80" height="80" src="img/productSingle_middle/${oi.product.productFirstImage.id}.jpg"></td>
 						<td class="orderItemProductInfoPartTD">
 							<div class="orderListItemProductLinkOutDiv">
 								<a href="foreproduct?pid=${oi.product.id}">${oi.product.name}</a>

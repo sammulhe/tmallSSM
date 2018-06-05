@@ -13,4 +13,9 @@
 	      select count(*) from review where pid = #{pid}
 	   </select>
 	   
+	   
+	   <insert id="add" parameterType="Review">
+	      insert into review (content,uid,pid,createDate) values (#{content},#{uid},#{pid},#{createDate})
+	   </insert>
+	   
 	</mapper>

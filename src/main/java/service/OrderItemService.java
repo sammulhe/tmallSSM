@@ -21,4 +21,7 @@ public interface OrderItemService {
 	public void update(OrderItem orderItem);
 	
 	public void delete(int id);
+	
+	public List<OrderItem> listByOid(int oid);
+	
 }

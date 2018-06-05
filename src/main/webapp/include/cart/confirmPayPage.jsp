@@ -32,17 +32,17 @@
 				<th colspan="2">宝贝</th>		
 				<th width="120px">单价</th>		
 				<th width="120px">数量</th>		
-				<th width="120px">商品总价 </th>		
+				<th width="120px">商品单价 </th>		
 				<th width="120px">运费</th>		
 			</thead>
 			<c:forEach items="${order.orderItems}" var="oi">
 				<tr>
-					<td><img width="50px" src="img/productSingle_middle/${oi.product.firstProductImage.id}.jpg"></td>
+					<td><img width="50px" src="img/productSingle_middle/${oi.product.productFirstImage.id}.jpg"></td>
 					<td class="confirmPayOrderItemProductLink">
 						<a href="#nowhere">${oi.product.name}</a>
 					</td>
 					<td>￥<fmt:formatNumber type="number" value="${oi.product.originalPrice}" minFractionDigits="2"/></td>
-					<td>1</td>
+					<td>${oi.number }</td>
 					<td><span class="conformPayProductPrice">￥<fmt:formatNumber type="number" value="${oi.product.promotePrice}" minFractionDigits="2"/></span></td>
 					<td><span>快递 ： 0.00 </span></td>
 				</tr>
@@ -50,7 +50,7 @@
 		</table>
 		
 		<div class="confirmPayOrderItemText pull-right">
-			实付款： <span class="confirmPayOrderItemSumPrice">￥<fmt:formatNumber type="number" value="${o.total}" minFractionDigits="2"/></span>
+			实付款： <span class="confirmPayOrderItemSumPrice">￥<fmt:formatNumber type="number" value="${order.total}" minFractionDigits="2"/></span>
 		</div>
 		
 		

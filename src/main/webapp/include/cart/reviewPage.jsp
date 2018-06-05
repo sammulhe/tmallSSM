@@ -7,7 +7,7 @@
 	
 <div class="reviewDiv">
 	<div class="reviewProductInfoDiv">
-		<div class="reviewProductInfoImg"><img width="400px" height="400px" src="img/productSingle/${product.firstProductImage.id}.jpg"></div>
+		<div class="reviewProductInfoImg"><img width="400px" height="400px" src="img/productSingle/${product.productFirstImage.id}.jpg"></div>
 		<div class="reviewProductInfoRightDiv">
 			<div class="reviewProductInfoRightText">
 				${product.name}
@@ -52,9 +52,9 @@
 	<div class="reviewDivlistReviews">
 		<c:forEach items="${reviews}" var="r">
 			<div class="reviewDivlistReviewsEach">
-				<div class="reviewDate"><fmt:formatDate value="${r.createDate}" pattern="yyyy-MM-dd"/></div>
+				<div class="reviewDate">${r.createDate}</div>
 				<div class="reviewContent">${r.content}</div>
-				<div class="reviewUserInfo pull-right">${r.user.anonymousName}<span class="reviewUserInfoAnonymous">(匿名)</span></div>
+				<div class="reviewUserInfo pull-right">${r.user.username}<span class="reviewUserInfoAnonymous">(匿名)</span></div>
 			</div>
 		</c:forEach>
 	</div>
